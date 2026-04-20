@@ -19,7 +19,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: artifactsdir
+          name: artifactsdirnm-build
           path: artifactsdir/artifact.txt
 
 
@@ -31,7 +31,7 @@ jobs:
         # actions/download-artifact@v4 will create the artifactsdir and download the artifact.txt into it
           uses: actions/download-artifact@v4
           with:
-            name: my-artifact
+            name: artifactsdirnm-build
             path: artifactsdir
           
         - name: Show artifact content
