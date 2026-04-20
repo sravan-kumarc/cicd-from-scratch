@@ -1,0 +1,42 @@
+name: LIN2-3 - Pipeline with Inputs
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      artifact_tag:
+        description: 'Artifact'
+        required: true
+        default: 'latest'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print base info
+        run: |
+          echo "Env: ${{ inputs.environment }}"
+          echo "Artifact: ${{ inputs.artifact_tag }}"
+
+      - name: Deploy to DEV
+        if: ${{ inputs.environment == 'dev' }}
+        run: echo "Deploying to DEV"
+
+      - name: Deploy to STAGING
+        if: ${{ inputs.environment == 'staging' }}
+        run: echo "Deploying to STAGING"
+
+      - name: Deploy to PROD
+        if: ${{ inputs.environment == 'prod' }}
+        run: echo "Deploying to PROD"
