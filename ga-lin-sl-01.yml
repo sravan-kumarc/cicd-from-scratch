@@ -1,0 +1,12 @@
+name: LIN1 - Basic Pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print message
+        run: echo "Pipeline is running from scratch 🚀"
