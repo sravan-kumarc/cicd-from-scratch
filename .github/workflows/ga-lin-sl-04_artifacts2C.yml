@@ -14,7 +14,7 @@ jobs:
       - name: Create artifact
         run: |
             mkdir -p artifactsdir
-            echo "This is an artifact" > artifact.txt
+            echo "This is an artifact" > artifactsdir/artifact.txt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v5
