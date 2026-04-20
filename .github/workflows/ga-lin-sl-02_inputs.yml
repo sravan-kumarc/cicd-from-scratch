@@ -1,4 +1,4 @@
-name: LIN1 - Basic Pipeline
+name: LIN2 - Pipeline with Inputs
 
 on:
   workflow_dispatch:
