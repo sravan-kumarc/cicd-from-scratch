@@ -1,4 +1,4 @@
-name: LIN4 - Artifacts Pipeline
+name: LIN4-2 - Artifacts Pipeline
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-artifact
+          name: artifactsdir
           path: artifactsdir/artifact.txt
 
 
