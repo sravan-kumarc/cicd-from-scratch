@@ -32,8 +32,8 @@ jobs:
         # #   with:
         # #     name: my-artifact
         # #     path: artifactsdir
-        #  - name: withoutDownload artifact || Show artifact content
-        #    run: cat artifactsdir/artifact.txt
+         - name: withoutDownload artifact || Show artifact content
+           run: cat artifactsdir/artifact.txt
 
 
          - name: Regular echo without download
