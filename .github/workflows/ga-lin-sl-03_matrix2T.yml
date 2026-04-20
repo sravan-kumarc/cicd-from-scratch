@@ -1,4 +1,4 @@
-name: LIN3 - Matrix Pipeline
+name: LIN3 - Matrix2 Pipeline
 
 on:
   push:
@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false 
+      fail-fast: true 
       matrix:
-        python-version: [3.8,3.9, 3.11, 3.58] #3.58 is not a valid version, it will pass due to fail-fast: false
+        python-version: [3.8,3.9, 3.11, 3.58] #3.58 is not a valid version, it will fail due to fail-fast: true
 
     steps:
       - uses: actions/checkout@v4
