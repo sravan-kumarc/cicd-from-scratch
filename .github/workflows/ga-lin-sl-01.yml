@@ -9,4 +9,4 @@ jobs:
 
     steps:
       - name: Print message
-        run: echo "Pipeline is running from scratch 🚀"
+        run: echo "Simple job!"
