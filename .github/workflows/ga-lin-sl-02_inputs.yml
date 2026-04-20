@@ -1,0 +1,17 @@
+name: LIN1 - Basic Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Message to print'
+        required: true
+        default: 'Simple job!'
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print message
+        run: echo "--> ${{ inputs.message }}!"
