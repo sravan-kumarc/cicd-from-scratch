@@ -17,7 +17,7 @@ jobs:
             echo "This is an artifact" > artifact.txt
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: artifactsdirnm-build
           path: artifactsdir/artifact.txt
@@ -29,7 +29,7 @@ jobs:
       steps:
         - name: Download artifact
         # actions/download-artifact@v4 will create the artifactsdir and download the artifact.txt into it
-          uses: actions/download-artifact@v4
+          uses: actions/download-artifact@v5
           with:
             name: artifactsdirnm-build
             path: artifactsdir
