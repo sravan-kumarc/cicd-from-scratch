@@ -32,6 +32,5 @@ jobs:
         #   with:
         #     name: my-artifact
         #     path: artifactsdir
-         - name: withoutDownload artifact
-           run: |
-            echo "This is a step that should run even if the download artifact step fails"
+         - name: withoutDownload artifact || Show artifact content
+           run: cat artifactsdir/artifact.txt
