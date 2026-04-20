@@ -27,10 +27,14 @@ jobs:
       needs: build
       runs-on: ubuntu-latest
       steps:
-        # - name: Download artifact
-        #   uses: actions/download-artifact@v4
-        #   with:
-        #     name: my-artifact
-        #     path: artifactsdir
-         - name: withoutDownload artifact || Show artifact content
-           run: cat artifactsdir/artifact.txt
+        # # - name: Download artifact
+        # #   uses: actions/download-artifact@v4
+        # #   with:
+        # #     name: my-artifact
+        # #     path: artifactsdir
+        #  - name: withoutDownload artifact || Show artifact content
+        #    run: cat artifactsdir/artifact.txt
+
+
+         - name: Regular echo without download
+           run: echo "This is a regular echo without downloading the artifact"
