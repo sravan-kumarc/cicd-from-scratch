@@ -9,6 +9,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: runner Details
+        run: |
+             echo "This is the runner details"
+             echo "Runner OS: $RUNNER_OS"
+             echo "Runner Architecture: $RUNNER_ARCH"
+             echo "Runner Name: $RUNNER_NAME"
+             
       - uses: actions/checkout@v4
 
       - name: Create artifact
@@ -32,9 +39,17 @@ jobs:
         # #   with:
         # #     name: my-artifact
         # #     path: artifactsdir
+         - name: runner Details
+           run: |
+             echo "This is the runner details"
+             echo "Runner OS: $RUNNER_OS"
+             echo "Runner Architecture: $RUNNER_ARCH"
+             echo "Runner Name: $RUNNER_NAME"
+
          - name: withoutDownload artifact || Show artifact content
            run: cat artifactsdir/artifact.txt
 
+           
 
          - name: Regular echo without download
            run: echo "This is a regular echo without downloading the artifact"
