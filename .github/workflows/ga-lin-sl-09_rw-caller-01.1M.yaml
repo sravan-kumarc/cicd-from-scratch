@@ -1,4 +1,4 @@
-name: LIN9-2 - Call Re-Usable yamls
+name: LIN9.2 - Call Re-Usable yamls
 
 on:
   workflow_dispatch:
