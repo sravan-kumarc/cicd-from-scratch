@@ -1,0 +1,63 @@
+name: LIN8 - Versioned S3 Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+      version:
+        description: "Release version"
+        required: true
+        default: v1.0
+
+jobs:
+
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create release artifact
+        run: |
+          mkdir release
+          echo "Release ${{ inputs.version }}" > release/app.txt
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ inputs.version }}
+          path: release/
+
+
+  deploy-release:
+    runs-on: ubuntu-latest
+    needs: build-release
+
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-${{ inputs.version }}
+          path: release
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Upload to S3 (env-based path)
+        run: |
+          aws s3 cp release/ s3://${{ secrets.AWS_S3_BUCKET }}/${{ inputs.environment }}/${{ inputs.version }}/ --recursive
+
+      - name: Verify upload
+        run: |
+          aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${{ inputs.environment }}/${{ inputs.version }}/
