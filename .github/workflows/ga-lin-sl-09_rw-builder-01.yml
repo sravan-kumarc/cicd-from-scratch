@@ -1,4 +1,4 @@
-name: LIN8-2 - Re-UseIT
+name: LIN9 - Re-UseIT
 
 on:
  workflow_call:
@@ -17,5 +17,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci
       - run: npm test
