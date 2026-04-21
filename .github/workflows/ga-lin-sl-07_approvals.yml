@@ -1,0 +1,24 @@
+name: LIN7 - Env Approval Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select environment"
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Deploy step
+        run: echo "Deploying to ${{ inputs.environment }}"
