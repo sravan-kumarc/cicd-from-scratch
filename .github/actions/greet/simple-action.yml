@@ -1,0 +1,20 @@
+name: "Composite Action - OIDC AWS Credentials"
+description: "Reusable Connection to AWS using OIDC"
+
+inputs:
+  role-to-assume:
+    description: "The ARN of the IAM role"
+    required: true
+  aws-region:
+    description: "AWS Region"
+    required: false
+    default: "ap-south-1"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS with OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.role-to-assume }}
+        aws-region: ${{ inputs.aws-region }}
