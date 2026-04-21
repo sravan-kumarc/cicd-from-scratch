@@ -1,0 +1,33 @@
+name: LIN8-2 - Using OIDC + AWS
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  pre-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create release artifact
+        run: |
+         echo "Performing Action - AWS oidc pre-checks..."
+
+  s3-buckets-list-pulls:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC }}
+          aws-region: ap-south-1
+
+      - name: List S3 buckets (pull request)
+        run: aws s3 ls
+
+
+      - name: Verify identity
+        run: aws sts get-caller-identity
