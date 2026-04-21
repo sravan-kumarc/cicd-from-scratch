@@ -1,7 +1,7 @@
 name: LIN-10 List S3 Buckets
 on:
     workflow_dispatch:
-        
+
 
 permissions:
   id-token: write # Required for OIDC
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Connect to AWS
-        uses: ./.github/actions/simple-action.yml
+        uses: ./.github/actions/greet/simple-action.yml
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
 
