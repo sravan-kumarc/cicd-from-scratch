@@ -1,11 +1,13 @@
-name: reusable-build
+name: LIN8-2 - Re-UseIT
 
 on:
-  workflow_call:
-    inputs:
-      node-version:
-        required: true
-        type: string
+ workflow_call:
+   inputs:
+     node-version:
+       description: 'Node.js version to use'
+       required: true
+       default: '20'
+       type: string
 
 jobs:
   build:

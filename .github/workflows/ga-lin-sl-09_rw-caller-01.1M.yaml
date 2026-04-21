@@ -1,4 +1,4 @@
-name: caller-pipeline
+name: LIN9-2 - call Re-Usable yamls
 
 on:
   workflow_dispatch:
