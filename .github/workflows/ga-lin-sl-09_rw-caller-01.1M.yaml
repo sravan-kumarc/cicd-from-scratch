@@ -1,0 +1,10 @@
+name: caller-pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/ga-lin-sl-09_rw-builder-01.yml   #.github/workflows/ga-lin-sl-09_rw-builder-01.yml refers to the reusable workflow file
+    with:
+      node-version: '24'
