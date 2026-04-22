@@ -22,7 +22,7 @@ jobs:
       - name: Simple Echo Step
         run: |
          echo "Performing Action - AWS oidc pre-checks"
-          echo "Checking AWS CLI Version"
+         echo "Checking AWS CLI Version"
 
   build-and-push-image:
     runs-on: ubuntu-latest
