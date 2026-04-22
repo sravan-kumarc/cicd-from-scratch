@@ -5,11 +5,14 @@ on:
 
 concurrency:
   group: "ga-lin-sl-11-${{ github.ref }}" 
-  cancel-in-progress: false           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
+  cancel-in-progress: true           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
 
 permissions:
     id-token: write
     contents: read
+
+env:
+  ECR= ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
 
 jobs:
   pre-checks:
@@ -19,6 +22,7 @@ jobs:
       - name: Simple Echo Step
         run: |
          echo "Performing Action - AWS oidc pre-checks"
+          echo "Checking AWS CLI Version"
 
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -41,7 +45,7 @@ jobs:
       - name: S1. Login to ECR
         run: |
          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS \
-          --password-stdin ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+          --password-stdin ${{ env.ECR }}
 
       - name: S2. Build Docker image
         run: |
@@ -49,8 +53,10 @@ jobs:
 
       - name: S3. Tagging and Pushing
         run: |
-         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:${{ github.sha }}
-         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:latest
+         set -e
 
-         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:${{ github.sha }}
-         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:latest
+         docker tag py_app:${{ github.sha }} ${{ env.ECR }}/py_app:${{ github.sha }}
+         docker tag py_app:${{ github.sha }} ${{ env.ECR }}/py_app:latest
+
+         docker push ${{ env.ECR }}/py_app:${{ github.sha }}
+         docker push ${{ env.ECR }}/py_app:latest
