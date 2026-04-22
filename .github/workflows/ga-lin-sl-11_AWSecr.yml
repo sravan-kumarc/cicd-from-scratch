@@ -5,7 +5,7 @@ on:
 
 concurrency:
   group: "ga-lin-sl-11-${{ github.ref }}" 
-  cancel-in-progress: false
+  cancel-in-progress: false           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
 
 permissions:
     id-token: write
@@ -50,7 +50,7 @@ jobs:
       - name: S3. Tagging and Pushing
         run: |
          docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:${{ github.sha }}
-         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:LATEST
+         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:latest
 
          docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:${{ github.sha }}
-         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:LATEST
+         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:latest
