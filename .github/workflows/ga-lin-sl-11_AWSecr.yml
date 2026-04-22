@@ -40,7 +40,8 @@ jobs:
 
       - name: S1. Login to ECR
         run: |
-         aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+         aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS \
+          --password-stdin ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
 
       - name: S2. Build Docker image
         run: |
