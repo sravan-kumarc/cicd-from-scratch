@@ -4,7 +4,7 @@ on:
  workflow_dispatch:
 
 concurrency:
-  group: "ga-lin-sl-11-${{ github.ref }}"
+  group: "ga-lin-sl-11-${{ github.ref }}" 
   cancel-in-progress: false
 
 permissions:
