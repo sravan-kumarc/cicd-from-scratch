@@ -3,6 +3,9 @@ name: LIN11 - Docker Build & Push
 on:
  workflow_dispatch:
 
+concurrency:
+  group: "ga-lin-sl-11-${{ github.ref }}"
+  cancel-in-progress: false
 
 permissions:
     id-token: write
@@ -17,19 +20,19 @@ jobs:
         run: |
          echo "Performing Action - AWS oidc pre-checks"
 
-  s3-buckets-list-pulls:
+  build-and-push-image:
     runs-on: ubuntu-latest
     needs: pre-checks
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Configure AWS with OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ap-south-1
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Verify identity
         run: aws sts get-caller-identity
@@ -37,7 +40,7 @@ jobs:
 
       - name: S1. Login to ECR
         run: |
-         aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ORG_ID}}.dkr.ecr.ap-south-1.amazonaws.com
+         aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
 
       - name: S2. Build Docker image
         run: |
@@ -45,5 +48,8 @@ jobs:
 
       - name: S3. Tagging and Pushing
         run: |
-         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.ap-south-1.amazonaws.com/py_app:${{ github.sha }}
-         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.ap-south-1.amazonaws.com/py_app:${{ github.sha }}
+         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:${{ github.sha }}
+         docker tag py_app:${{ github.sha }} ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:LATEST
+
+         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:${{ github.sha }}
+         docker push ${{ secrets.AWS_ORG_ID}}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/py_app:LATEST
