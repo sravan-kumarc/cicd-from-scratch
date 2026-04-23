@@ -45,6 +45,6 @@ jobs:
 
       - name: Wait for Deployment to be Available
         run: |
-            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:${{ github.sha }}
+            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:0161eb0d355a0997d6e944ea50ddd07106d121ba
             kubectl rollout status deployment/dep-base
             
