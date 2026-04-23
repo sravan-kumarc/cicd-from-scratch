@@ -42,7 +42,7 @@ jobs:
           kubectl run test-pod --image=busybox \
             --restart=Never \
             -- sleep 3600 \
-            --dry-run=client -o yaml > k8s/test-pod.yaml && kubectl apply -f k8s/basepod0.yaml
+            --dry-run=client -o yaml > k8s/basepod0.yaml && kubectl apply -f k8s/basepod0.yaml
 
       - name: Wait for Test POD to be Running
         run: |
