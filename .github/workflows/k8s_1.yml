@@ -39,12 +39,11 @@ jobs:
 
       - name: Run Test POD
         run: |
-          kubectl apply -f k8s/dep-base.yaml
-          kubectl apply -f k8s/lb-svc-dep-base.yaml
+          kubectl apply -f k8s/dep-base.yml
+          kubectl apply -f k8s/lb-svc-dep-base.yml
       
 
       - name: Wait for Test POD to be Running
         run: |
-            kubectl get pods test-pod -o jsonpath='{.status.phase}' | grep -q "Running" || exit 1
-            kubectl get pods test-pod -o wide
+            kubectl get deployments dep-base -o jsonpath='{.status.conditions[?(@.type=="Available")].status}' | grep True
             
