@@ -37,13 +37,15 @@ jobs:
             --name sravan-eks-c02 \
             --region ${{ vars.AWS_REGION }}
 
-      - name: Run Test POD
+      - name: Run & Deploy
         run: |
           kubectl apply -f k8s/dep-base.yml
           kubectl apply -f k8s/lb-svc-dep-base.yml
       
 
-      - name: Wait for Test POD to be Running
+      - name: Wait for Deployment to be Available
         run: |
-            kubectl get deployments dep-base -o jsonpath='{.status.conditions[?(@.type=="Available")].status}' | grep True
+            kubectl get deployments dep-base
+            kubectl get services dep-base
+            kubectl wait --for=condition=available --timeout=120s deployment/dep-base
             
