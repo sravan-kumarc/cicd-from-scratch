@@ -30,14 +30,17 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig \
-            --name sravan-eks-c02 \
-            --region ${{ vars.AWS_REGION }}
+      # - name: Update kubeconfig
+      #   run: |
+        
+      #     aws eks update-kubeconfig \
+      #       --name sravan-eks-c02 \
+      #       --region ${{ vars.AWS_REGION }}
 
       - name: Run Test POD
         run: |
+          kubectl cluster-info
+
           # Use apply -f for directory or specific files to ensure idempotency and proper management of Kubernetes resources
           kubectl run test-pod --image=busybox \
             --restart=Never \
