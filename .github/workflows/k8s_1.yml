@@ -39,17 +39,9 @@ jobs:
 
       - name: Run Test POD
         run: |
-          kubectl cluster-info
-
-          # Use apply -f for directory or specific files to ensure idempotency and proper management of Kubernetes resources
-          kubectl run test-pod --image=busybox \
-            --restart=Never \
-            -- sleep 3600 \
-            --dry-run=client -o yaml > k8s/basepod0.yaml
+          kubectl apply -f k8s/dep-base.yaml
+          kubectl apply -f k8s/lb-svc-dep-base.yaml
       
-      - name: pullPods
-        run: |
-            kubectl apply -f k8s/basepod0.yaml
 
       - name: Wait for Test POD to be Running
         run: |
