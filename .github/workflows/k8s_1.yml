@@ -45,8 +45,6 @@ jobs:
 
       - name: Wait for Deployment to be Available
         run: |
-            kubectl get deployments dep-base
-            kubectl get services dep-base
-            kubectl wait --for=condition=available --timeout=120s deployment/dep-base
-            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:latest
+            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:${{ github.sha }}
+            kubectl rollout status deployment/dep-base
             
