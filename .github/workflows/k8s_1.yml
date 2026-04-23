@@ -30,12 +30,12 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      # - name: Update kubeconfig
-      #   run: |
+      - name: Update kubeconfig
+        run: |
         
-      #     aws eks update-kubeconfig \
-      #       --name sravan-eks-c02 \
-      #       --region ${{ vars.AWS_REGION }}
+          aws eks update-kubeconfig \
+            --name sravan-eks-c02 \
+            --region ${{ vars.AWS_REGION }}
 
       - name: Run Test POD
         run: |
