@@ -37,13 +37,13 @@ jobs:
             --name sravan-eks-c02 \
             --region ${{ vars.AWS_REGION }}
 
-      - name: Run & Deploy
-        run: |
-          kubectl apply -f k8s/dep-base.yml
-          kubectl apply -f k8s/lb-svc-dep-base.yml
+      # - name: Run & Deploy
+      #   run: |
+      #     kubectl apply -f k8s/dep-base.yml
+      #     kubectl apply -f k8s/lb-svc-dep-base.yml
       
 
       - name: Wait for Deployment to be Available
         run: |
-            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:0161eb0d355a0997d6e944ea50ddd07106d121ba
+            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:latest
             
