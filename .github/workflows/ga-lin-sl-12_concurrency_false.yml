@@ -1,4 +1,4 @@
-name: LIN12_false - Concurrency Example
+name: LIN12_false - Concurrency - FALSE
 on:
     workflow_dispatch:
 
