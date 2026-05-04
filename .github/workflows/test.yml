@@ -1,0 +1,54 @@
+name: Deploy to EKS
+
+on:
+  workflow_dispatch:
+
+# Ensure only one deploy runs at a time to prevent state conflicts
+concurrency:
+  group: eks-deploy-${{ github.ref }}
+  cancel-in-progress: false 
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ECR_REGISTRY: ${{ secrets.AWS_ORG_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+  REPO_NAME: py_app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: setting up tag
+        run: echo "TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+        
+          aws eks update-kubeconfig \
+            --name sravan-eks-c02 \
+            --region ${{ vars.AWS_REGION }}
+
+      - name: Run & Deploy
+        run: |
+          kubectl apply -f k8s/dep-base.yml
+          kubectl apply -f k8s/lb-svc-dep-base.yml
+      
+
+      - name: Wait for Deployment to be Available
+        run: |
+            kubectl set image deployment/dep-base nginx=${{ env.ECR_REGISTRY }}/py_app:${{ env.TAG }}
+
+            kubectl rollout status deployment/dep-base --timeout=120s
+            
