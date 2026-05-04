@@ -1,11 +1,11 @@
-name: LIN11 - Docker Build & Push
+name: LIN.11 - Docker Build & Push
 
 on:
  workflow_dispatch:
 
-concurrency:
-  group: "ga-lin-sl-11-${{ github.ref }}" 
-  cancel-in-progress: true           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
+# concurrency:
+#   group: "ga-lin-sl-11-${{ github.ref }}" 
+#   cancel-in-progress: true           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
 
 permissions:
     id-token: write
