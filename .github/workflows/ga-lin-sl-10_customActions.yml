@@ -1,4 +1,4 @@
-name: LIN-10 List S3 Buckets
+name: LIN10 List S3 Buckets
 on:
     workflow_dispatch:
 

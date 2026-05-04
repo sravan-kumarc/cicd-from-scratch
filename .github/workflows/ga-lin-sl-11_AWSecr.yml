@@ -1,4 +1,4 @@
-name: LIN.11 - Docker Build & Push
+name: LIN11 - Docker Build & Push
 
 on:
  workflow_dispatch:
