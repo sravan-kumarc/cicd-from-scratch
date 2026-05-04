@@ -45,9 +45,10 @@ jobs:
       - name: Deploy with Helm
         run: |
           helm upgrade --install dep-base ./py-app \
-            --set image.repository=${ECR_REGISTRY}/${REPO_NAME} \
-            --set image.tag=${TAG}
+            --set image.repository=${{ env.ECR_REGISTRY }}/${{ env.REPO_NAME }} \
+            --set image.tag=${{ env.TAG }} \
+            --atomic --wait --timeout 120s
 
-      - name: Verify rollout
+      - name: Show Helm release
         run: |
-          kubectl rollout status deployment/dep-base --timeout=120s
+          helm status dep-base
