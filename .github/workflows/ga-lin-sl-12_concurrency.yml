@@ -1,0 +1,17 @@
+name: LIN12 - Concurrency Example
+on:
+    workflow_dispatch:
+
+concurrency:
+  group: "ga-lin-sl-12-${{ github.ref }}" 
+  cancel-in-progress: true           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Simple Echo Step
+        run: |
+         echo "Performing Action - Concurrency Example"
+         echo "This job will be cancelled if another workflow run is triggered while this one is still running."
