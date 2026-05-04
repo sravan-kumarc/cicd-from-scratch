@@ -4,7 +4,7 @@ on:
 
 concurrency:
   group: "ga-lin-sl-12-${{ github.ref }}" 
-  cancel-in-progress: false           # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run
+  cancel-in-progress: false          # if "TRUE" - it cancels all currently running jobs in the same group, if "FALSE" - it allows all jobs to run one by one in sequence and wait for the previous one to finish before starting the next one 
 
 jobs:
   example-job:
