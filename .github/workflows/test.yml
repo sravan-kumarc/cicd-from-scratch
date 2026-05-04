@@ -47,8 +47,10 @@ jobs:
           helm upgrade --install dep-base ./py-app \
             --set image.repository=${{ env.ECR_REGISTRY }}/${{ env.REPO_NAME }} \
             --set image.tag=${{ env.TAG }} \
-            --atomic --wait --timeout 120s
+            --atomic --wait --timeout 5m
 
       - name: Show Helm release
         run: |
+          helm list
           helm status dep-base
+          helm history dep-base
