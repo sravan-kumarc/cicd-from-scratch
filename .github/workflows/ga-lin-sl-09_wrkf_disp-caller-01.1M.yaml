@@ -5,6 +5,6 @@ on:
 
 jobs:
   call-build:
-    uses: ./.github/workflows/ga-lin-sl-09_rw-builder-01.yml   #.github/workflows/ga-lin-sl-09_rw-builder-01.yml refers to the reusable workflow file
+    uses: ./.github/workflows/ga-lin-sl-09_wrkf_call-builder-01.yml   #.github/workflows/ga-lin-sl-09_rw-builder-01.yml refers to the reusable workflow file
     with:
       node-version: '24'
