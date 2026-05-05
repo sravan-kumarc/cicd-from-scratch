@@ -13,4 +13,4 @@ jobs:
          fetch-depth: 0  # Fetch all history for git leak detection
       - uses: gitleaks/gitleaks-action@v2
         with:
-          env: 'GITLEAKS_ENV'
+          secrets: ${{ secrets.DB_PASSWORD }}  # Example of passing a secret to gitleaks
