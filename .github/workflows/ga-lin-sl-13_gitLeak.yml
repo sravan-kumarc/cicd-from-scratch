@@ -13,4 +13,4 @@ jobs:
          fetch-depth: 0  # Fetch all history for git leak detection
       - uses: gitleaks/gitleaks-action@v2
         with:
-          GA_TOKEN: ${{ env.GA_TOKEN }}
+          GA_TOKEN: ${{ secrets.GA_TOKEN }}
