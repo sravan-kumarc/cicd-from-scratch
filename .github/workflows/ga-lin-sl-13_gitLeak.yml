@@ -1,0 +1,16 @@
+name: LIN13 - Git Leak Detection
+on:
+  [push, pull_request]
+
+jobs:
+  git-leak-detection:
+    name: Git Leak Detection_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+         fetch-depth: 0  # Fetch all history for git leak detection
+      - uses: gitleaks/gitleaks-action@v2
+        with:
+          env: 'GITLEAKS_ENV'
