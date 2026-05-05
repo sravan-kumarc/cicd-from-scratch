@@ -13,7 +13,4 @@ jobs:
          fetch-depth: 0  # Fetch all history for git leak detection
       - uses: gitleaks/gitleaks-action@v2
         with:
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-    
-            # Example of passing a secret to gitleaks
+          GA_TOKEN: ${{ env.GA_TOKEN }}
