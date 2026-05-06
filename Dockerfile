@@ -9,6 +9,7 @@ COPY . .
 #----------------
 
 FROM python:3.11-alpine
+RUN apk add --no-cache curl
 RUN addgroup -S appgroup && adduser -S myuser -G appgroup
 WORKDIR /app
 
