@@ -6,5 +6,20 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
 COPY . .
+#----------------
+
+FROM python:3.11-alpine
+RUN adduser -D myuser && addgroup -S myuser -G appgroup
+WORKDIR /app
+
+COPY --from=builder /app /app
+
+RUN chown -R myuser:appgroup /app
+USER myuser
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:5000/health || exit 1
+EXPOSE 5000
+
+
 
 CMD ["python", "app.py"]
