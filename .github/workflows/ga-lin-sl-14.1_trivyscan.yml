@@ -14,5 +14,5 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
-          severity: HIGH,CRITICAL
+          severity: HIGH,CRITICAL,LOW,MEDIUM
           exit-code: 1
