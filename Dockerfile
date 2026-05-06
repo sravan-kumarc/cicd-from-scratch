@@ -1,5 +1,8 @@
 FROM python:3.11-alpine AS builder
-RUN pip install --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --upgrade \
+    pip==25.3 \
+    wheel==0.46.2 \
+    setuptools==80.9.0
 WORKDIR /app
 
 COPY requirements.txt .
