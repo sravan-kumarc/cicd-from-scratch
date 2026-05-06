@@ -32,6 +32,9 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        
+
+      
       containers:
         - name: {{ .Release.Name }}
           {{- with .Values.securityContext }}
