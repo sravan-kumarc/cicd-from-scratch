@@ -13,6 +13,10 @@ COPY . .
 
 FROM python:3.11-alpine
 RUN apk add --no-cache curl
+RUN pip install --no-cache-dir --upgrade \
+    pip==25.3 \
+    wheel==0.46.2 \
+    setuptools==80.9.0
 RUN addgroup -S appgroup && adduser -S myuser -G appgroup
 WORKDIR /app
 
