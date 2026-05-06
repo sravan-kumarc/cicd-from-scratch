@@ -9,7 +9,7 @@ COPY . .
 #----------------
 
 FROM python:3.11-alpine
-RUN adduser -D myuser && addgroup -S myuser -G appgroup
+RUN addgroup -S appgroup && adduser -S myuser -G appgroup
 WORKDIR /app
 
 COPY --from=builder /app /app
