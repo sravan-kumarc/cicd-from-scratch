@@ -1,5 +1,5 @@
 FROM python:3.11-alpine AS builder
-
+RUN pip install --upgrade pip setuptools wheel
 WORKDIR /app
 
 COPY requirements.txt .
