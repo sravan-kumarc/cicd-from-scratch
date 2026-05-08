@@ -16,3 +16,4 @@ jobs:
       - name: Use output
         run: |
           echo "The output from the previous step is: ${{ steps.set_output.outputs.eg_op }}"
+          echo "i wanna see your psswd: ${{ secrets.DB_PASSWORD}}"
