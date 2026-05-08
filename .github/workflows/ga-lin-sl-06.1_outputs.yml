@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Set output
         id: set_output
-        run: echo $EXAMPLE_ENV_VAR >> $GITHUB_OUTPUT
+        run: echo "eg_op=$EXAMPLE_ENV_VAR" >> $GITHUB_OUTPUT
 
       - name: Use output
         run: |
-          echo "The output from the previous step is: ${{ steps.set_output.outputs.EXAMPLE_ENV_VAR }}"
+          echo "The output from the previous step is: ${{ steps.set_output.outputs.eg_op }}"
