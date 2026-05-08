@@ -60,3 +60,8 @@ jobs:
         with:
           name: trivy-sarif-report
           path: trivy-results.sarif
+
+      # ==========================================================
+      - name: Generate SBOM
+        run: |
+         trivy image --format cyclonedx -o sbom.json py-app:${{ github.sha }}
