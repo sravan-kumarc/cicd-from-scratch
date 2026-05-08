@@ -2,6 +2,9 @@ name: LIN14.1 - Trivy DevSecOps Security Scan
 
 on:
     workflow_dispatch:
+    push:
+      branches:
+        - main
 
 permissions:
   contents: read
