@@ -3,7 +3,7 @@ name: LIN6.1 - Outputs
 on:
   workflow_dispatch:
 env:
-  EXAMPLE_ENV_VAR: "This is an example environment variable"
+  GLOBAL_ENV_VAR: "Global environment variable"
   AWS_ORG_ID: ${{ secrets.AWS_ORG_ID }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 jobs:
@@ -18,19 +18,19 @@ jobs:
       - name: Set output
         id: set_output
         env:
-          ENV_VAR_IN_STEP1: "This is an example output variable"
+          ENV_VAR_IN_STEP1: "environment variable inside step 1"
         
 
         run: |
-         echo "eg_op=$EXAMPLE_ENV_VAR" >> $GITHUB_OUTPUT
+         echo "eg_op=$GLOBAL_ENV_VAR" >> $GITHUB_OUTPUT
          echo "ENV_VAR_IN_STEP1=$ENV_VAR_IN_STEP1" >> $GITHUB_ENV
          echo "eg_step_op=$ENV_VAR_IN_STEP1" >> $GITHUB_OUTPUT
         
 
       - name: Use output
         run: |
-          echo "The output from the previous step is: ${{ steps.set_output.outputs.eg_op }}"
-          echo "The step output is: ${{ steps.set_output.outputs.eg_step_op }}"
+          echo "The job output is: ${{ steps.set_output.outputs.eg_op }}"
+          echo "The step output is: Message is same and clear - ${{ steps.set_output.outputs.eg_step_op }}"
 
       - name: Pulling info from env&secrets var
         run: |
