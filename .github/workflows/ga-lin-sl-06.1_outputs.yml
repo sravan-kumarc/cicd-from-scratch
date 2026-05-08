@@ -1,0 +1,18 @@
+name: LIN6.1 - Outputs
+
+on:
+  workflow_dispatch:
+env:
+  EXAMPLE_ENV_VAR: "This is an example environment variable"
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set output
+        id: set_output
+        run: echo "$EXAMPLE_ENV_VAR">> $GITHUB_OUTPUT
+
+      - name: Use output
+        run: |
+          echo "The output from the previous step is: ${{ steps.set_output.outputs.EXAMPLE_ENV_VAR }}"
