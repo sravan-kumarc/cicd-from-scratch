@@ -43,4 +43,4 @@ jobs:
     steps:
       - name: Use output from previous job
         run: |
-          echo "The output from the previous job is: ${{ needs.tests.steps.set_output.outputs.eg_op1 }}"
+          echo "The output from the previous job is: ${{ needs.tests.outputs.eg_op1 }}"
