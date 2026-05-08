@@ -13,13 +13,20 @@ jobs:
     steps:
       - name: Set output
         id: set_output
-        run: echo "eg_op=$EXAMPLE_ENV_VAR" >> $GITHUB_OUTPUT
+        env:
+          ENV_VAR_IN_STEP1: "This is an example output variable"
+        run: |
+         echo "eg_op=$EXAMPLE_ENV_VAR" >> $GITHUB_OUTPUT
+         echo "ENV_VAR_IN_STEP1=$ENV_VAR_IN_STEP1" >> $GITHUB_ENV
+
+         echo "eg_step_op=$ENV_VAR_IN_STEP1" >> $GITHUB_OUTPUT
 
       - name: Use output
         run: |
           echo "The output from the previous step is: ${{ steps.set_output.outputs.eg_op }}"
-          echo "i wanna see your psswd: ${{ secrets.DB_PASSWORD}} & ${{ secrets.AWS_ORG_ID }}"
+          echo "The step output is: ${{ steps.set_output.outputs.eg_step_op }}"
 
       - name: Pulling info from env var
         run: |
+          echo "Pulling info from env var: ${{ secrets.AWS_ORG_ID}}"
           echo "Pulling info from env var: ${{ env.AWS_ORG_ID}}"
