@@ -68,3 +68,11 @@ jobs:
       - name: Generate SBOM
         run: |
          trivy image --format cyclonedx -o sbom.json py-app:${{ github.sha }}
+      # ==========================================================
+      # Upload SBOM Artifact
+      # ==========================================================
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-report
+          path: sbom.json
