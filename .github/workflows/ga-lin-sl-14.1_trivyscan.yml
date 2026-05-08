@@ -35,3 +35,10 @@ jobs:
           severity: HIGH,CRITICAL,LOW,MEDIUM
           exit-code: 1
           format: table      
+
+      - name: Generate Trivy SARIF Report
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: py-app:${{ github.sha }}
+          format: sarif
+          output: trivy-results.sarif
