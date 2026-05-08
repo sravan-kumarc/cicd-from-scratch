@@ -10,23 +10,37 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    outputs:
+      eg_op1: ${{ steps.set_output.outputs.eg_op }}
+      eg_step_op1: ${{ steps.set_output.outputs.eg_step_op }}
+
     steps:
       - name: Set output
         id: set_output
         env:
           ENV_VAR_IN_STEP1: "This is an example output variable"
+        
+
         run: |
          echo "eg_op=$EXAMPLE_ENV_VAR" >> $GITHUB_OUTPUT
          echo "ENV_VAR_IN_STEP1=$ENV_VAR_IN_STEP1" >> $GITHUB_ENV
-
          echo "eg_step_op=$ENV_VAR_IN_STEP1" >> $GITHUB_OUTPUT
+        
 
       - name: Use output
         run: |
           echo "The output from the previous step is: ${{ steps.set_output.outputs.eg_op }}"
           echo "The step output is: ${{ steps.set_output.outputs.eg_step_op }}"
 
-      - name: Pulling info from env var
+      - name: Pulling info from env&secrets var
         run: |
-          echo "Pulling info from env var: ${{ secrets.AWS_ORG_ID}}"
+          echo "Pulling info from secret var: ${{ secrets.AWS_ORG_ID}}"
           echo "Pulling info from env var: ${{ env.AWS_ORG_ID}}"
+  test2:
+    runs-on: ubuntu-latest
+    needs: tests
+
+    steps:
+      - name: Use output from previous job
+        run: |
+          echo "The output from the previous job is: ${{ needs.tests.steps.set_output.outputs.eg_op1 }}"
