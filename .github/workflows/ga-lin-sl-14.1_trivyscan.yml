@@ -3,6 +3,11 @@ name: LIN14.1 - Trivy DevSecOps Security Scan
 on:
     workflow_dispatch:
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
    security-scan:
     runs-on: ubuntu-latest
@@ -46,6 +51,6 @@ jobs:
       # Upload SARIF Report
       # ==========================================================
       - name: Upload Trivy SARIF Report
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-results.sarif
