@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Set output
         id: set_output
-        run: echo "$EXAMPLE_ENV_VAR">> $GITHUB_OUTPUT
+        run: echo $EXAMPLE_ENV_VAR >> $GITHUB_OUTPUT
 
       - name: Use output
         run: |
