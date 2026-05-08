@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
 env:
   EXAMPLE_ENV_VAR: "This is an example environment variable"
+  AWS_ORG_ID: ${{ secrets.AWS_ORG_ID }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -17,3 +19,7 @@ jobs:
         run: |
           echo "The output from the previous step is: ${{ steps.set_output.outputs.eg_op }}"
           echo "i wanna see your psswd: ${{ secrets.DB_PASSWORD}} & ${{ secrets.AWS_ORG_ID }}"
+
+      - name: Pulling info from env var
+        run: |
+          echo "Pulling info from env var: ${{ env.AWS_ORG_ID}}"
