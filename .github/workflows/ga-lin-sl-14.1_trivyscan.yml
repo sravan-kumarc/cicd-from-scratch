@@ -11,6 +11,10 @@ permissions:
   security-events: write
   actions: read
 
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/py-app
+  IMAGE_TAG: ${{ github.sha }}
+
 jobs:
    security-scan:
     runs-on: ubuntu-latest
@@ -28,26 +32,27 @@ jobs:
           exit-code: 1
           format: table
 
-#image build
-      - name: Build Docker Image
+#image loging and build
+      - name: Login to Docker Hub and Build Image
         run: |
-          docker build -t py-app:${{ github.sha }} .
+          echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker push $IMAGE_NAME:$IMAGE_TAG
 
 #image scan
       - name: Scan Docker Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: image
-          scan-ref: py-app:${{ github.sha }}
+          image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           scanners: vuln,secret
-          severity: HIGH,CRITICAL,LOW,MEDIUM
+          severity: HIGH,CRITICAL
           exit-code: 1
           format: table      
 
       - name: Generate Trivy SARIF Report
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: py-app:${{ github.sha }}
+          image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           format: sarif
           output: trivy-results.sarif
       # ==========================================================
@@ -67,7 +72,7 @@ jobs:
       # ==========================================================
       - name: Generate SBOM
         run: |
-         trivy image --format cyclonedx -o sbom.json py-app:${{ github.sha }}
+         trivy image --format cyclonedx -o sbom.json ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       # ==========================================================
       # Upload SBOM Artifact
       # ==========================================================
@@ -76,3 +81,22 @@ jobs:
         with:
           name: sbom-report
           path: sbom.json
+
+      # ==========================================================
+      - name: Installing COSIGN in env
+        uses: sigstore/cosign-installer@v3
+
+      - name: MOving Cosign Key Pairs
+        run: |
+          echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
+          echo "${{ secrets.COSIGN_PUBLIC_KEY }}" > cosign.pub
+      
+      - name : Sign certificate with Cosign
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+         cosign sign --yes --key cosign.key ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        
+      - name: Verifying Cosign Images
+        run: |
+          cosign verify --key cosign.pub ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
