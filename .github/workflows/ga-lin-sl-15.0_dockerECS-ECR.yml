@@ -18,7 +18,7 @@ jobs:
         name: AWS Credentials & SVC Connection
         runs-on: ubuntu-latest
         outputs:
-          aws-ecr-login: ${{ steps.login-ecr.outputs.aws-ecr-login }}
+          aws-ecr-login: ${{ steps.login-ecr.outputs.registry }}
 
         steps:
           - name: Checkout code
@@ -44,4 +44,5 @@ jobs:
           - name: Echo ECR login success
             run: |
                 echo "Logged in to Amazon ECR successfully"
+                echo "ECR Registry: ${{ steps.login-ecr.outputs.registry }}"
 
