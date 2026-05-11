@@ -51,12 +51,14 @@ jobs:
             run: |
                 echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
 
-          - name: Build and Tag Docker Image
-            env:
-                SHORT_SHA: "v-${ github.sha::6 }"
+          - name: Build and Tag Docker Image   
             run: |
+                SHORT_SHA: "v-${ github.sha::6 }"
                 docker build -t ${{ env.AWS_REPOSITORY }}:$SHORT_SHA .
                 docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
+
+                echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+                echo "Docker image built and tagged successfully"
 
           - name: Push Docker Image to ECR
             run: |
