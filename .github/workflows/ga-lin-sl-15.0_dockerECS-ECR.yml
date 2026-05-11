@@ -12,6 +12,7 @@ permissions:
 
 env:
     AWS_REGION: ap-south-1
+    AWS_REPOSITORY: hellobuddy
 
 jobs:
     awsCreds-connection:
@@ -51,14 +52,16 @@ jobs:
                 echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
 
           - name: Build and Tag Docker Image
+            env:
+                SHORT_SHA: "v-${ github.sha::6 }"
             run: |
-                docker build -t hellobuddy .
-                docker tag hellobuddy:latest $ECR_REGISTRY/hellobuddy:${{ github.sha }}
-                docker tag hellobuddy:latest $ECR_REGISTRY/hellobuddy:latest
+                docker build -t ${{ env.AWS_REPOSITORY }}:$SHORT_SHA .
+                docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
 
           - name: Push Docker Image to ECR
             run: |
-                docker push $ECR_REGISTRY/hellobuddy:${{ github.sha }}
+                docker push $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:$SHORT_SHA
+                docker push $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
 
                 echo "Pushed Docker image to ECR successfully"
 
