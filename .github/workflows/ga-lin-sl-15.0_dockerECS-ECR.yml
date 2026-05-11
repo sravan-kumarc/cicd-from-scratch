@@ -45,4 +45,11 @@ jobs:
             run: |
                 echo "Logged in to Amazon ECR successfully"
                 echo "ECR Registry: ${{ steps.login-ecr.outputs.registry }}"
+                echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+                docker build -t hellobuddy .
+                docker tag hellobuddy:latest $ECR_REGISTRY/hellobuddy:${{ github.sha }}
+                docker tag hellobuddy:latest $ECR_REGISTRY/hellobuddy:latest
+                docker push $ECR_REGISTRY/hellobuddy:${{ github.sha }}
+
+                echo "Pushed Docker image to ECR successfully"
 
