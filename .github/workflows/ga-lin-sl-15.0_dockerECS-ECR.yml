@@ -10,9 +10,16 @@ permissions:
   security-events: write
   actions: read
 
+env:
+    AWS_REGION: ap-south-1
+
 jobs:
     awsCreds-connection:
+        name: AWS Credentials & SVC Connection
         runs-on: ubuntu-latest
+        outputs:
+          aws-ecr-login: ${{ steps.login-ecr.outputs.aws-ecr-login }}
+
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
@@ -22,7 +29,7 @@ jobs:
             with:
               aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_MAIN }}
               aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_MAIN }}
-              aws-region: ap-south-1
+              aws-region: ${{ env.AWS_REGION }}
 
           - name: Echo success message
             run: |
@@ -32,9 +39,6 @@ jobs:
         needs: awsCreds-connection
         runs-on: ubuntu-latest
         
-        outputs:
-          ecr-login: ${{ steps.login-ecr.outputs.login }}
-
         steps:
           - name: Login to Amazon ECR
             id: login-ecr
