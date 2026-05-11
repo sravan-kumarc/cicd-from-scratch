@@ -54,6 +54,7 @@ jobs:
           - name: Generate Short SHA  
             run: |
                 SHORT_SHA="v-${GITHUB_SHA::7}"
+                echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
 
           - name: Build Docker Image
             run: |
