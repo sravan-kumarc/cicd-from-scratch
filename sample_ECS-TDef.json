@@ -1,0 +1,67 @@
+{
+---> "taskDefinitionArn": "arn:aws:ecs:<region>:<account-id>:task-definition/<family>:1",
+    "containerDefinitions": [
+        {
+            "name": "hellobuddy",
+            "image": "221711265081.dkr.ecr.ap-south-1.amazonaws.com/hellobuddy@<image-digest>",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 5000,
+                    "hostPort": 5000,
+                    "protocol": "tcp",
+                    "name": "hellobuddy-5000-tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "systemControls": []
+        }
+    ],
+    "family": "test-tdf",
+    "executionRoleArn": "arn:aws:iam::<account-id>:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+--->"revision": 1,
+    "volumes": [],
+--->"status": "ACTIVE",
+--->"requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+--->"compatibilities": [
+        "EC2",
+        "FARGATE",
+        "MANAGED_INSTANCES"
+    ],
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+--->"registeredAt": "2026-05-11T15:59:30.220000+00:00",
+--->"registeredBy": "arn:aws:iam::<account-id>:user/test-user",
+    "enableFaultInjection": false
+}
