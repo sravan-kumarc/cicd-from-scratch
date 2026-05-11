@@ -60,6 +60,7 @@ jobs:
             run: |
                 docker build -t ${{ env.AWS_REPOSITORY }}:$SHORT_SHA .
                 docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
+                docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:$SHORT_SHA
 
                 echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
                 echo "Docker image built and tagged successfully"
