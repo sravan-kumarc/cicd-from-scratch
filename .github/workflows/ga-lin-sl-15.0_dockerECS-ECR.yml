@@ -53,7 +53,7 @@ jobs:
 
           - name: Build and Tag Docker Image   
             run: |
-                SHORT_SHA: "v-${ github.sha::6 }"
+                SHORT_SHA="v-${ github.sha::6 }"
                 docker build -t ${{ env.AWS_REPOSITORY }}:$SHORT_SHA .
                 docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
 
