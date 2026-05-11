@@ -51,9 +51,13 @@ jobs:
             run: |
                 echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
 
-          - name: Build and Tag Docker Image   
+          - name: Generate Short SHA  
             run: |
                 SHORT_SHA="v-${ GITHUB_SHA::7 }"
+                echo "Short SHA: $SHORT_SHA" >> $GITHUB_ENV
+
+          - name: Build Docker Image
+            run: |
                 docker build -t ${{ env.AWS_REPOSITORY }}:$SHORT_SHA .
                 docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
 
