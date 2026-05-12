@@ -56,6 +56,9 @@ jobs:
                 SHORT_SHA="v-${GITHUB_SHA::7}"
                 FULL_IMAGE_URI="${ECR_REGISTRY}/$AWS_REPOSITORY:${SHORT_SHA}"
 
+                echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+                echo "FULL_IMAGE_URI=$FULL_IMAGE_URI" >> $GITHUB_ENV
+
                 docker build -t $FULL_IMAGE_URI .
                 docker tag $FULL_IMAGE_URI $ECR_REGISTRY/$AWS_REPOSITORY:latest
 
@@ -69,7 +72,7 @@ jobs:
           - name: Full URI of the pushed image
             id: set-image-uri
             run: |
-                echo "image_uri=${ECR_REGISTRY}/${{ env.AWS_REPOSITORY }}:$SHORT_SHA" >> $GITHUB_OUTPUT
+                echo "image_uri=$FULL_IMAGE_URI" >> $GITHUB_OUTPUT
 
     deploy-to-ecs:
         name: Deploy to Amazon ECS
@@ -101,10 +104,15 @@ jobs:
             run: |
                 jq \
                 --arg IMAGE "$IMAGE_URI" \
-                --arg NAME "lin15-td" \
+                --arg NAME "$AWS_REPOSITORY" \
                 '
-                .containerDefinitions |= map(if .name == $NAME then .image = $IMAGE else . end) \
-                   | del(
+                .containerDefinitions |= map(
+                  if .name == $NAME 
+                  then .image = $IMAGE 
+                  else .
+                  end
+                ) 
+                | del(
                    .taskDefinitionArn,
                    .revision,
                    .status,
