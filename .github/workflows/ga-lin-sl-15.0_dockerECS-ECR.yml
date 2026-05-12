@@ -132,6 +132,7 @@ jobs:
                   --query 'taskDefinition.taskDefinitionArn' \
                   --output text)
                 echo "New task definition registered successfully"
+                echo "NEW_TDF_REG=$NEW_TDF_REG" >> $GITHUB_ENV
 
           - name: Update ECS service to use new task definition
             run: |
