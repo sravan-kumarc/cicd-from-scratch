@@ -45,24 +45,21 @@ jobs:
           - name: Echo ECR login success
             run: |
                 echo "Logged in to Amazon ECR successfully"
-                echo "ECR Registry: ${{ steps.login-ecr.outputs.registry }}"
 
           - name: Set ECR_REGISTRY environment variable
-            run: |
-                echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+            env:
+              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            run: echo "ECR_REGISTRY=${ECR_REGISTRY}" >> $GITHUB_ENV
 
           - name: Generate Short SHA  
             run: |
                 SHORT_SHA="v-${GITHUB_SHA::7}"
-                echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+                FULL_IMAGE_URI="${ECR_REGISTRY}/$AWS_REPOSITORY:${SHORT_SHA}"
 
-          - name: Build Docker Image
-            run: |
-                docker build -t ${{ env.AWS_REPOSITORY }}:$SHORT_SHA .
-                docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
-                docker tag ${{ env.AWS_REPOSITORY }}:$SHORT_SHA $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:$SHORT_SHA
+                docker build -t $FULL_IMAGE_URI .
+                docker tag $FULL_IMAGE_URI $ECR_REGISTRY/$AWS_REPOSITORY:latest
+                docker tag $FULL_IMAGE_URI $ECR_REGISTRY/$AWS_REPOSITORY:$SHORT_SHA
 
-                echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
                 echo "Docker image built and tagged successfully"
 
           - name: Push Docker Image to ECR
