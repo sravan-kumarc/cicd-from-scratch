@@ -11,26 +11,30 @@ permissions:
   actions: read
 
 env:
-    AWS_REGION: ap-south-1
-    AWS_REPOSITORY: hellobuddy
+    AWS_REGION: ${{ secrets.AWS_REGION }}
+    AWS_REPOSITORY: ${{ secrets.AWS_REPOSITORY }}
+    IMAGE_TAG: "v-${{ github.sha }}"
+    AWS_ROLE_ARN_MAIN: ${{ secrets.AWS_ROLE_ARN_MAIN }}
 
 jobs:
     awsCreds-connection:
         name: AWS Credentials & SVC Connection
         runs-on: ubuntu-latest
+
         outputs:
           aws-ecr-login: ${{ steps.login-ecr.outputs.registry }}
+          image_uri: ${{ steps.set-image-uri.outputs.image_uri }}
 
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
 
           - name: Configure AWS credentials
-            uses: aws-actions/configure-aws-credentials@v3
+            uses: aws-actions/configure-aws-credentials@v4
             with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_MAIN }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_MAIN }}
+              role-to-assume: ${{ secrets.AWS_ROLE_ARN_MAIN }}
               aws-region: ${{ env.AWS_REGION }}
+
 
           - name: Echo success message
             run: |
@@ -72,3 +76,75 @@ jobs:
 
                 echo "Pushed Docker image to ECR successfully"
 
+          - name: Full URI of the pushed image
+            id: set-image-uri
+            run: |
+                echo "image_uri="${ECR_REGISTRY}/${{ env.AWS_REPOSITORY }}:$SHORT_SHA" >> $GITHUB_OUTPUT
+
+    deploy-to-ecs:
+        name: Deploy to Amazon ECS
+        needs: awsCreds-connection
+        runs-on: ubuntu-latest
+
+        env:
+          IMAGE_URI: ${{ needs.awsCreds-connection.outputs.image_uri }}
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Configure AWS credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              role-to-assume: ${{ secrets.AWS_ROLE_ARN_MAIN }}
+              aws-region: ${{ env.AWS_REGION }}
+
+          - name: Get current task definition
+            run: |
+                aws ecs describe-task-definition \
+                  --task-definition lin15-td \
+                   --query 'taskDefinition' > current_td.json
+
+                echo "Current task definition retrieved successfully"
+
+          - name: Update task definition with new image
+            run: |
+                jq --arg IMAGE "$IMAGE_URI" \
+                   --arg NAME "lin15-td" \
+                   '.containerDefinitions | map(if .name == $NAME then .image = $IMAGE else . end) \
+                   | del(
+                   .taskDefinitionArn,
+                   .revision,
+                   .status,
+                   .requiresAttributes,
+                   .compatibilities,
+                   .registeredAt,
+                   .deregisteredAt,
+                   .registeredBy
+                   )' current_td.json > new_td.json
+
+                echo "Task definition updated with new image successfully"
+
+          - name: Register new task definition
+            run: |
+                NEW_TDF_REG=$(aws ecs register-task-definition \
+                  --cli-input-json file://new_td.json \
+                  --query 'taskDefinition.taskDefinitionArn' \
+                  --output text)
+                echo "New task definition registered successfully"
+
+          - name: Update ECS service to use new task definition
+            run: |
+                aws ecs update-service \
+                  --cluster lin15-cluster \
+                  --service lin15-service \
+                  --task-definition $NEW_TDF_REG
+                  --force-new-deployment
+
+                echo "ECS service updated to use new task definition successfully"
+
+          - name: ECS Service Deployment Status
+            run: |
+                aws ecs wait services-stable \
+                  --cluster lin15-cluster \
+                  --services lin15-service
