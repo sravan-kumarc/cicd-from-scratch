@@ -67,6 +67,8 @@ jobs:
                 docker push $FULL_IMAGE_URI
                 docker push $ECR_REGISTRY/$AWS_REPOSITORY:latest
 
+                echo "image_uri=$FULL_IMAGE_URI" >> $GITHUB_OUTPUT
+
                 echo "Pushed Docker image to ECR successfully"
 
           - name: Full URI of the pushed image
@@ -96,14 +98,15 @@ jobs:
             run: |
                 aws ecs describe-task-definition \
                   --task-definition lin15-td \
-                   --query 'taskDefinition' > current_td.json
+                   --query 'taskDefinition' \
+                   --output json > current_td.json
 
                 echo "Current task definition retrieved successfully"
 
           - name: Update task definition with new image
             run: |
                 jq \
-                --arg IMAGE "$IMAGE_URI" \
+                --arg IMAGE "$FULL_IMAGE_URI" \
                 --arg NAME "$AWS_REPOSITORY" \
                 '
                 .containerDefinitions |= map(
