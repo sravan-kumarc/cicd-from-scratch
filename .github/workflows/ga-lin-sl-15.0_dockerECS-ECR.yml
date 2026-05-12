@@ -61,8 +61,6 @@ jobs:
 
                 echo "Docker image built and tagged successfully"
 
-          - name: Push Docker Image to ECR
-            run: |
                 docker push $FULL_IMAGE_URI
                 docker push $ECR_REGISTRY/$AWS_REPOSITORY:latest
 
