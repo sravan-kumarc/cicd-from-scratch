@@ -35,11 +35,6 @@ jobs:
             with:
               role-to-assume: ${{ secrets.AWS_ROLE_ARN_MAIN }}
               aws-region: ${{ env.AWS_REGION }}
-
-
-          - name: Echo success message
-            run: |
-                echo "AWS credentials configured successfully"
     
           - name: Login to Amazon ECR
             id: login-ecr
@@ -80,7 +75,7 @@ jobs:
           - name: Full URI of the pushed image
             id: set-image-uri
             run: |
-                echo "image_uri="${ECR_REGISTRY}/${{ env.AWS_REPOSITORY }}:$SHORT_SHA" >> $GITHUB_OUTPUT
+                echo "image_uri=${ECR_REGISTRY}/${{ env.AWS_REPOSITORY }}:$SHORT_SHA" >> $GITHUB_OUTPUT
 
     deploy-to-ecs:
         name: Deploy to Amazon ECS
