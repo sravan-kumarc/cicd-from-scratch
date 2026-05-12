@@ -99,9 +99,11 @@ jobs:
 
           - name: Update task definition with new image
             run: |
-                jq --arg IMAGE "$IMAGE_URI" \
-                   --arg NAME "lin15-td" \
-                   '.containerDefinitions | map(if .name == $NAME then .image = $IMAGE else . end) \
+                jq \
+                --arg IMAGE "$IMAGE_URI" \
+                --arg NAME "lin15-td" \
+                '
+                .containerDefinitions |= map(if .name == $NAME then .image = $IMAGE else . end) \
                    | del(
                    .taskDefinitionArn,
                    .revision,
