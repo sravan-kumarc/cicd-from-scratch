@@ -23,7 +23,6 @@ jobs:
         runs-on: ubuntu-latest
 
         outputs:
-          aws-ecr-login: ${{ steps.login-ecr.outputs.registry }}
           image_uri: ${{ steps.set-image-uri.outputs.image_uri }}
 
         steps:
@@ -41,10 +40,6 @@ jobs:
             uses: aws-actions/amazon-ecr-login@v2
             with:
               mask-password: false
-
-          - name: Echo ECR login success
-            run: |
-                echo "Logged in to Amazon ECR successfully"
 
           - name: Set ECR_REGISTRY environment variable
             env:
@@ -67,16 +62,15 @@ jobs:
                 docker push $FULL_IMAGE_URI
                 docker push $ECR_REGISTRY/$AWS_REPOSITORY:latest
 
-                echo "image_uri=$FULL_IMAGE_URI" >> $GITHUB_OUTPUT
-
                 echo "Pushed Docker image to ECR successfully"
+                echo "IMAGE_URI=$FULL_IMAGE_URI" >> $GITHUB_ENV
 
           - name: Full URI of the pushed image
             id: set-image-uri
             run: |
                 echo "image_uri=$FULL_IMAGE_URI" >> $GITHUB_OUTPUT
 
-    deploy-to-ecs:
+    deploy-to-ecs:    
         name: Deploy to Amazon ECS
         needs: awsCreds-connection
         runs-on: ubuntu-latest
@@ -106,7 +100,7 @@ jobs:
           - name: Update task definition with new image
             run: |
                 jq \
-                --arg IMAGE "$FULL_IMAGE_URI" \
+                --arg IMAGE "$IMAGE_URI" \
                 --arg NAME "$AWS_REPOSITORY" \
                 '
                 .containerDefinitions |= map(
