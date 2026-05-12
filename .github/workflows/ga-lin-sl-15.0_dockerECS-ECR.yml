@@ -58,14 +58,13 @@ jobs:
 
                 docker build -t $FULL_IMAGE_URI .
                 docker tag $FULL_IMAGE_URI $ECR_REGISTRY/$AWS_REPOSITORY:latest
-                docker tag $FULL_IMAGE_URI $ECR_REGISTRY/$AWS_REPOSITORY:$SHORT_SHA
 
                 echo "Docker image built and tagged successfully"
 
           - name: Push Docker Image to ECR
             run: |
-                docker push $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:$SHORT_SHA
-                docker push $ECR_REGISTRY/${{ env.AWS_REPOSITORY }}:latest
+                docker push $FULL_IMAGE_URI
+                docker push $ECR_REGISTRY/$AWS_REPOSITORY:latest
 
                 echo "Pushed Docker image to ECR successfully"
 
