@@ -1,9 +1,7 @@
 name: LIN15.0-ECR-ECS deploy
 on:
  workflow_dispatch:
- push:
-  branches:
-    - main
+
 
 permissions:
   id-token: write
