@@ -36,9 +36,10 @@ jobs:
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
             ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-            IMAGE_TAG: ${{ github.sha }}
-            IMAGE_URI: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            IMAGE_TAG: v-${{ github.sha }}
+            
           run: |
+            IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
             docker build -t $IMAGE_URI .
             docker push $IMAGE_URI
 
@@ -51,11 +52,18 @@ jobs:
            --query taskDefinition \
            --region ${{ secrets.AWS_REGION }} > ecs-task-def.json
 
-        - name: Deploy to Amazon ECS
-          id: deploy-ecs
-          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        - name: Fill in the new image ID in the Amazon ECS task definition
+          id: task-def
+          uses: aws-actions/amazon-ecs-render-task-definition@v1
           with:
-            task-definition: ecs-task-def.json
-            service: ${{ secrets.ECS_SERVICE }}
-            cluster: ${{ secrets.ECS_CLUSTER }}
-            image: ${{ steps.build-image.outputs.image_uri }}
+           task-definition: ecs-task-def.json
+           container-name: my-container
+           image: ${{ steps.build-image.outputs.image_uri }}
+        
+        - name: Deploy Amazon ECS task definition
+          uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+          with:
+            task-definition: ${{ steps.task-def.outputs.task-definition }}
+            service: my-service
+            cluster: my-cluster
+            wait-for-service-stability: true
