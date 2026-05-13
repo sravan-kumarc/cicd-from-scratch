@@ -28,14 +28,13 @@ jobs:
         - name: Login to Amazon ECR
           id: login-ecr
           uses: aws-actions/amazon-ecr-login@v2
-          with:
-            mask-password: false
+
 
         - name: Build, tag, and push image to Amazon ECR
           id: build-image
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+            ECR_REPOSITORY: hellobuddy
             IMAGE_TAG: v-${{ github.sha }}
             
           run: |
@@ -48,7 +47,7 @@ jobs:
         - name: Storing TaskDef as JSON output
           run: |
            aws ecs describe-task-definition \
-           --task-definition ${{ secrets.ECS_TASK_DEFINITION }} \
+           --task-definition lin15-td \
            --query taskDefinition \
            --region ${{ secrets.AWS_REGION }} > ecs-task-def.json
 
@@ -57,13 +56,13 @@ jobs:
           uses: aws-actions/amazon-ecs-render-task-definition@v1
           with:
            task-definition: ecs-task-def.json
-           container-name: my-container
+           container-name: hellobuddy
            image: ${{ steps.build-image.outputs.image_uri }}
         
         - name: Deploy Amazon ECS task definition
           uses: aws-actions/amazon-ecs-deploy-task-definition@v2
           with:
             task-definition: ${{ steps.task-def.outputs.task-definition }}
-            service: my-service
-            cluster: my-cluster
+            service: lin15-td-service
+            cluster: lin15-cluster
             wait-for-service-stability: true
