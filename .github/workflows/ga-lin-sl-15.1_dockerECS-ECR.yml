@@ -37,6 +37,7 @@ jobs:
             ECR_REPOSITORY: hellobuddy
             IMAGE_TAG: v-${{ github.sha }}
             
+            
           run: |
             IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
             docker build -t $IMAGE_URI .
@@ -49,6 +50,7 @@ jobs:
            aws ecs describe-task-definition \
            --task-definition lin15-td \
            --query taskDefinition \
+           --output json \
            --region ${{ secrets.AWS_REGION }} > ecs-task-def.json
 
         - name: Fill in the new image ID in the Amazon ECS task definition
